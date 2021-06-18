@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Paper,
   TableContainer,
   Table as TableMaterial,
   TableHead,
@@ -35,7 +34,7 @@ const Table = ({ headers, items, cellsFormatters }) => {
           {items.map((item) => (
             <TableRow key={item._id}>
               {cellsFormatters.map((formatter) => (
-                <TableCell>{formatter(item)}</TableCell>
+                <TableCell key = {item._id}>{formatter(item)}</TableCell>
               ))}
             </TableRow>
           ))}

@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useState } from "react";
 import setoutService from "../services/setout-service";
-
 import "./../App.css";
 import Table from "./Table";
 

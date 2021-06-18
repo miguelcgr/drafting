@@ -1,5 +1,5 @@
 import axios from "axios";
-
+require("dotenv").config();
 class SetoutsService {
   constructor() {
     this.designApi = axios.create({
@@ -15,5 +15,3 @@ class SetoutsService {
 const setoutsService = new SetoutsService();
 
 export default setoutsService;
-
- 
