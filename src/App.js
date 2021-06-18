@@ -1,22 +1,22 @@
-import React, { Component } from "react";
+import React from "react";
+import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
-
-import { Switch, Route, Router } from "react-router-dom";
-
 import Designs from "./components/Designs";
-import Setouts from "./components/Setouts";
-import Listing from "./components/Listing";
 import Nav from "./components/Nav";
+import Setouts from "./components/Setouts";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="app-body">
-        <Nav />
-        <Route path="/listing" component={Listing} />
-      </div>
-    );
-  }
-}
+const App = () => (
+  <div className="app-body">
+    <Router>
+      <Nav />
+      <Switch>
+        <Route path="/" component={App}>
+          <Route path="/designs" component={Designs} />
+          <Route path="/setouts" component={Setouts} />
+        </Route>
+      </Switch>
+    </Router>
+  </div>
+);
 
 export default App;

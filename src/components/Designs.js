@@ -1,84 +1,107 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "./../App.css";
-//
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-//
-
+import React, { useEffect, useState } from "react";
+import designService from "../services/design-service";
+import usersService from "../services/user-service";
+import "./../App.css";
+import Table from "./Table";
 
 const useStyles = makeStyles({
   root: {
     width: "100%",
-    
   },
-  container: {
-    maxHeight: 440,
+  userIcon: {
+    backgroundColor: "#69b7d6",
+    borderRadius: "50%",
+    height: "2rem",
+    width: "2rem",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontWeight: "bold",
+    color: "white",
   },
-
+  fontBold: {
+    fontWeight: "bold",
+  },
+  headersCenter: {
+    fontWeight: "bold",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "3em",
+  },
+  cellsClass: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "3em",
+  },
 });
 
 const Designs = () => {
   const classes = useStyles();
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
   const [info, setInfo] = useState([]);
+  const [users, setUsers] = useState([]);
 
+  const tableHead = [
+    <span className={classes.fontBold}>Name</span>,
+    <span className={classes.headersCenter}>Courses</span>,
+    <span className={classes.headersCenter}>Wales</span>,
+    <span className={classes.headersCenter}>Last Updated</span>,
+    <span className={classes.headersCenter}>By</span>,
+  ];
+
+  const cellsFormatters = [
+    (item) => <span>{item.name}</span>,
+    (item) => <span className={classes.cellsClass}>{item.courses}</span>,
+    (item) => <span className={classes.cellsClass}>{item.wales}</span>,
+
+    (item) => {
+      const formattedDate = item.updated
+        .slice(2, 10)
+        .split("-")
+        .reverse()
+        .join("/");
+      return <span className={classes.cellsClass}>{formattedDate}</span>;
+    },
+
+    (item) => {
+      const user = users.find((user) => item.user_id_last_update === user.id);
+
+      if (user) {
+        return (
+          <div className={classes.cellsClass}>
+            <span className={classes.userIcon}>
+              {user.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
+            </span>
+          </div>
+        );
+      }
+    },
+  ];
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/designs")
-      .then((res) => {
-        const { data } = res;
+    usersService
+      .getUsers()
+      .then((res) => setUsers(res))
+      .catch((err) => console.log(err));
 
-        setInfo(data);
-     
+    designService
+      .getDesigns()
+      .then((res) => {
+        setInfo(res);
       })
-      .catch((err) => console.log("err", err));
+      .catch((err) => {
+        console.log("err", err);
+      });
   }, []);
 
-
   return (
-    <Paper className = {classes.root}>
-      <TableContainer className = {classes.container}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Courses</TableCell>
-              <TableCell>Wales</TableCell>
-              <TableCell>Last Updated</TableCell>
-              <TableCell>By</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {info.map((element) => (
-              <TableRow key={element._id}>
-                <TableCell>{element.name}</TableCell>
-                <TableCell>{element.courses}</TableCell>
-                <TableCell>{element.wales}</TableCell>
-                <TableCell>{element.updated}</TableCell>
-                <TableCell>{element.user_id_last_update}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
+    <Table headers={tableHead} items={info} cellsFormatters={cellsFormatters} />
   );
 };
 
 export default Designs;
-
-

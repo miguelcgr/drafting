@@ -2,17 +2,8 @@
   margin-top: 5%;
   text-align: center;
   background-color: white;
-  
   display: flex;
   flex-direction: row;
- padding: auto;
-
+  padding: auto;
 }
 
-.setouts {
-  border: 2px solid green;
-}
-
-.designs {
-  border: 2px solid yellow;
-}
